@@ -1,0 +1,27 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="xtrtools">
+    @{
+        if (ViewBag.IsAuthenticated == false)
+        {
+            <div class="xtrtools-noticiation">User is not authenticated, please check the config again</div>
+        }
+    }
+    <div class="xtrtools-prform">
+        <form method="post" id="xtrtools-form">
+            <div class="nice-form-group">
+                <label>PR URL</label>
+                <input type="text" placeholder="@ViewBag.GitPrlUrlPreview" name="prurl" />
+            </div>
+
+            <div class="nice-form-group">
+                <input id="xtrtools-form-submit" type="submit" value="Get PR Changes" class="btn btn-primary">
+            </div>
+        </form>
+    </div>
+
+    <div class="xtrtools-prcheckbox">
+    </div>
+</div>
