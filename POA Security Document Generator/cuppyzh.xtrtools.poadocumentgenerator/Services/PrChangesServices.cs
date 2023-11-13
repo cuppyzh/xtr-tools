@@ -34,6 +34,7 @@ namespace cuppyzh.xtrtools.poadocumentgenerator.Services
             {
                 ProjectName = _GetProjectName(prurl),
                 ProjectRepository = _GetRepoName(prurl),
+                PrId = _GetPrId(prurl),
                 CommitId = root.GetProperty("fromHash"),
                 SinceCommitId = root.GetProperty("toHash"),
                 Changes = result

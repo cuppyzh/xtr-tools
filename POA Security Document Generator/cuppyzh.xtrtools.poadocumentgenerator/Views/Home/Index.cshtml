@@ -24,10 +24,36 @@
     <br />
     <div class="xtrtools-prcheckbox" style="display:none;">
         <form method="post" id="xtrtools-form-filelist">
+
+            <div class="nice-form-group">
+                <label>Project Name</label>
+                <input type="text" placeholder="" name="projectname" readonly />
+            </div>
+
+            <div class="nice-form-group">
+                <label>Repository Name</label>
+                <input type="text" placeholder="" name="repositoryname" readonly />
+            </div>
+
+            <div class="nice-form-group">
+                <label>PR ID</label>
+                <input type="text" placeholder="" name="prid" readonly />
+            </div>
+
+            <div class="nice-form-group">
+                <label>Commmit ID</label>
+                <input type="text" placeholder="" name="commitid" readonly />
+            </div>
+
+            <div class="nice-form-group">
+                <label>Start Commit ID</label>
+                <input type="text" placeholder="" name="sincecommitid" readonly />
+            </div>
+
             <div class="nice-form-group">
                 <label>File List</label>
-                <ul class="list-group list-group-light" style="min-width: 22rem;">
-                    <li class="list-group-item">
+                <ul id="filelist" class="list-group list-group-light" style="min-width: 22rem;">
+                    @* <li class="list-group-item">
                         <input class="form-check-input me-1" type="checkbox" value="" aria-label="...">
                         First checkbox
                     </li>
@@ -46,9 +72,10 @@
                     <li class="list-group-item">
                         <input class="form-check-input me-1" type="checkbox" value="" aria-label="...">
                         Fifth checkbox
-                    </li>
+                    </li> *@
                 </ul>
             </div>
+
             <div class="nice-form-group">
                 <input id="xtrtools-form-filelist-submit" type="submit" value="Generate Document" class="btn btn-primary">
             </div>
