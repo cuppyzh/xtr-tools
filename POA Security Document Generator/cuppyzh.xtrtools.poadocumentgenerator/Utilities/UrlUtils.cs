@@ -9,7 +9,7 @@
 
         public static string GetPrUrlPreview()
         {
-            return ApplicationSettings.Git.Endpoints.MainUrl + ApplicationSettings.Git.Endpoints.PrChangesUrl;
+            return ApplicationSettings.Git.Endpoints.MainUrl + ApplicationSettings.Git.Endpoints.PrUrlPreview;
         }
     }
 }

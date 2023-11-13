@@ -24,6 +24,7 @@ namespace cuppyzh.xtrtools.poadocumentgenerator.Utilities
     public class GitEndpointConfigModel
     {
         public string MainUrl { get; set; }
+        public string PrUrlPreview { get; set; }
         public string TestApiUrl { get; set; }
         public string PrChangesUrl { get; set; }
         public string FileChangesUrl { get; set; }

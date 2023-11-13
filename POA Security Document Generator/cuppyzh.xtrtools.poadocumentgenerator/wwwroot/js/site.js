@@ -10,26 +10,29 @@ $(document).ready(function () {
     $('#xtrtools-form').submit(function (event) {
         console.log("Test Click");
 
+        $(".xtrtools-prcheckbox").hide();
+
         event.preventDefault();
 
-        var formData = $(this).serialize();
         $.ajax({
             type: 'POST',
             url: '/api/v1/pr-changes/get',
-            dataType: 'json',
-            data: JSON.stringify($(this).serializeArray()),
-            contentType: 'application/json;charset=UTF-8',
+            data: $(this).serialize(),
             success: function (response) {
                 console.log("Call success");
                 $('#result').html(response);
+                PopulateFileList(response);
             },
             error: function () {
                 console.log("Call failed");
             }
         });
     });
-
 });
+
+function PopulateFileList(response) {
+    $(".xtrtools-prcheckbox").show();
+}
 
 //let form = document.querySelector("#xtrtools-form");
 
