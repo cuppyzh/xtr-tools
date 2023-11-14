@@ -28,7 +28,6 @@ $(document).ready(function () {
         event.preventDefault();
 
         $.ajax({
-            async: false,
             type: 'POST',
             url: '/api/v1/pr-changes/get',
             data: $(this).serialize(),
