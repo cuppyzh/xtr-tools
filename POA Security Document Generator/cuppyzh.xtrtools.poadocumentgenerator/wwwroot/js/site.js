@@ -4,26 +4,40 @@
 // Write your JavaScript code.
 
 
+$(document).ajaxStart(function () {
+    console.log("ajaxStart");
+    $("#cover-spin").show();
+});
+
+$(document).ajaxStop(function () {
+    console.log("ajaxStop");
+    $("#cover-spin").hide();
+});
 $(document).ready(function () {
     console.log("Test Javascript");
 
     $("#cover-spin").hide();
 
+
     $('#xtrtools-form').submit(function (event) {
         console.log("Test Click");
 
-        $(".xtrtools-prcheckbox").hide();
         $("#cover-spin").show();
+        $(".xtrtools-prcheckbox").hide();
 
         event.preventDefault();
 
         $.ajax({
+            async: false,
             type: 'POST',
             url: '/api/v1/pr-changes/get',
             data: $(this).serialize(),
+            beforeSend: function (xhr) {
+                $("#cover-spin").show();
+            },
             success: function (response) {
                 PopulateFileList(response);
-                $("#cover-spin").hide();
+                $("#cover-spin").show();
             },
             error: function () {
                 console.log("Call failed");
@@ -34,27 +48,69 @@ $(document).ready(function () {
     $('#xtrtools-form-filelist').submit(function (event) {
         console.log("Test PR Checkbox button Click");
 
-        //$("#cover-spin").show();
-
         event.preventDefault();
 
-        //$.ajax({
-        //    type: 'POST',
-        //    url: '/api/v1/pr-changes/get',
-        //    data: $(this).serialize(),
-        //    success: function (response) {
-        //        PopulateFileList(response);
-        //        $("#cover-spin").hide();
-        //    },
-        //    error: function () {
-        //        console.log("Call failed");
-        //    }
-        //});
+        const checkboxInput = new Array();
+
+        $("#filelist .form-check-input:checked").each(function () {
+            checkboxInput.push(this.name);
+        });
+
+        var request = {
+            "ProjectName": $('input[name="projectname"]').val(),
+            "ProjectRepository": $('input[name="repositoryname"]').val(),
+            "PRId": $('input[name="prid"]').val(),
+            "CommitId": $('input[name="commitid"]').val(),
+            "Files": checkboxInput
+        };
+
+        $.ajax({
+            type: 'POST',
+            url: '/api/v1/pr-changes/export',
+            data: JSON.stringify(request),
+            contentType: "application/json; charset=utf-8",
+            //dataType: "json",
+            success: function (response, status, xhr) {
+
+                var blob = new Blob([response], { type: "application/octetstream" });
+                var filename = GetFileNameFromXhr(xhr);
+
+                var isIE = false || !!document.documentMode;
+                if (isIE) {
+                    window.navigator.msSaveBlob(blob, filename);
+                } else {
+                    var url = window.URL || window.webkitURL;
+                    link = url.createObjectURL(blob);
+                    var a = $("<a />");
+                    a.attr("download", filename);
+                    a.attr("href", link);
+                    $("body").append(a);
+                    a[0].click();
+                    $("body").remove(a);
+                }
+            },
+            error: function () {
+                console.log("Call failed");
+            }
+        });
+
     });
 });
 
+function GetFileNameFromXhr(xhr) {
+    var filename = "";
+    var disposition = xhr.getResponseHeader('Content-Disposition');
+    if (disposition && disposition.indexOf('attachment') !== -1) {
+        var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+        var matches = filenameRegex.exec(disposition);
+        if (matches != null && matches[1]) {
+            filename = matches[1].replace(/['"]/g, '');
+        }
+    }
+    return filename;
+}
+
 function PopulateFileList(response) {
-    console.log(response["projectName"]);
     $('input[name="projectname"]').val(response["projectName"]);
     $('input[name="repositoryname"]').val(response["projectRepository"]);
     $('input[name="prid"]').val(response["prId"]);
@@ -64,27 +120,25 @@ function PopulateFileList(response) {
     let changes = response["changes"];
 
     $.each(changes, function (index, value) {
+        var status = "";
+
+        if (value.type == "MODIFY") {
+            status = '<span class="filelist-modified"><span class="filelist-text" style="max-width: 200px;">MODIFIED</span></span>';
+        }
+
+        if (value.type == "ADD") {
+            status = '<span class="filelist-added"><span class="filelist-text" style="max-width: 200px;">ADDED</span></span>';
+        }
+
+        if (value.type == "DELETE") {
+            status = '<span class="filelist-deleted"><span class="filelist-text" style="max-width: 200px;">DELETED</span></span>';
+        }
+
         var li = $('<li class="list-group-item"><input class="form-check-input me-1" type="checkbox" name="' + value.path + '" id="' + value.path + '" checked/>' +
-            '<label for="' + value.path + '"></label></li>');
+            '<label for="' + value.path + '"></label>'+status+'</li>');
         li.find('label').text(value.path);
         $('#filelist').append(li);
     });
 
-
-
     $(".xtrtools-prcheckbox").show();
 }
-
-//let form = document.querySelector("#xtrtools-form");
-
-//form.addEventListener("submit", function (event) {
-//    event.preventDefault();
-
-//    console.log("Test Click");
-
-//    fetch(form.action, {
-//        method: "post",
-//        body: new URLSearchParams(new FormData(form)) // for application/x-www-form-urlencoded
-//        // body: new FormData(form) // for multipart/form-data
-//    });
-//});

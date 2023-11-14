@@ -1,4 +1,6 @@
-﻿using cuppyzh.xtrtools.poadocumentgenerator.Utilities;
+﻿using ClosedXML.Excel;
+using cuppyzh.xtrtools.poadocumentgenerator.Controllers;
+using cuppyzh.xtrtools.poadocumentgenerator.Utilities;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
@@ -41,9 +43,26 @@ namespace cuppyzh.xtrtools.poadocumentgenerator.Services
             };
         }
 
+        public MemoryStream Export(ExportApiRequestBody request)
+        {
+            using (XLWorkbook workbook = new XLWorkbook())
+            {
+                var worksheet = workbook.AddWorksheet("Exported Sheet");
+                worksheet.Cell("A1").Value = "Hello World!";
+                worksheet.Cell("A2").FormulaA1 = "MID(A1, 7, 5)";
+                workbook.SaveAs("HelloWorld.xlsx");
+
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    workbook.SaveAs(memoryStream);
+                    return memoryStream;
+                };
+            };
+        }
+
         private string _GeneratePrChangesUrl(string prurl)
         {
-            var url = ApplicationSettings.Git.Endpoints.MainUrl 
+            var url = ApplicationSettings.Git.Endpoints.MainUrl
                 + ApplicationSettings.Git.Endpoints.PrChangesUrl;
             url = url.Replace("{projectName}", _GetProjectName(prurl));
             url = url.Replace("{projectRepository}", _GetRepoName(prurl));
