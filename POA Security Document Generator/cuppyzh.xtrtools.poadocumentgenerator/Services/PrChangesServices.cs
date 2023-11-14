@@ -43,23 +43,6 @@ namespace cuppyzh.xtrtools.poadocumentgenerator.Services
             };
         }
 
-        public MemoryStream Export(ExportApiRequestBody request)
-        {
-            using (XLWorkbook workbook = new XLWorkbook())
-            {
-                var worksheet = workbook.AddWorksheet("Exported Sheet");
-                worksheet.Cell("A1").Value = "Hello World!";
-                worksheet.Cell("A2").FormulaA1 = "MID(A1, 7, 5)";
-                workbook.SaveAs("HelloWorld.xlsx");
-
-                using (MemoryStream memoryStream = new MemoryStream())
-                {
-                    workbook.SaveAs(memoryStream);
-                    return memoryStream;
-                };
-            };
-        }
-
         private string _GeneratePrChangesUrl(string prurl)
         {
             var url = ApplicationSettings.Git.Endpoints.MainUrl

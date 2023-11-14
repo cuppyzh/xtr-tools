@@ -68,25 +68,24 @@ $(document).ready(function () {
             url: '/api/v1/pr-changes/export',
             data: JSON.stringify(request),
             contentType: "application/json; charset=utf-8",
+            responseType: 'blob',
             //dataType: "json",
             success: function (response, status, xhr) {
-
-                var blob = new Blob([response], { type: "application/octetstream" });
                 var filename = GetFileNameFromXhr(xhr);
 
-                var isIE = false || !!document.documentMode;
-                if (isIE) {
+                var blob = response;
+                if (window.navigator.msSaveOrOpenBlob) {
                     window.navigator.msSaveBlob(blob, filename);
-                } else {
-                    var url = window.URL || window.webkitURL;
-                    link = url.createObjectURL(blob);
-                    var a = $("<a />");
-                    a.attr("download", filename);
-                    a.attr("href", link);
-                    $("body").append(a);
-                    a[0].click();
-                    $("body").remove(a);
                 }
+                else {
+                    var downloadLink = window.document.createElement('a');
+                    downloadLink.href = window.URL.createObjectURL(new Blob([blob], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }));
+                    downloadLink.download = filename;
+                    document.body.appendChild(downloadLink);
+                    downloadLink.click();
+                    document.body.removeChild(downloadLink);
+                }
+
             },
             error: function () {
                 console.log("Call failed");
@@ -134,7 +133,7 @@ function PopulateFileList(response) {
         }
 
         var li = $('<li class="list-group-item"><input class="form-check-input me-1" type="checkbox" name="' + value.path + '" id="' + value.path + '" checked/>' +
-            '<label for="' + value.path + '"></label>'+status+'</li>');
+            '<label for="' + value.path + '"></label>' + status + '</li>');
         li.find('label').text(value.path);
         $('#filelist').append(li);
     });

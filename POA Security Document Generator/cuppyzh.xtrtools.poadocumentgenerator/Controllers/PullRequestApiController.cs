@@ -9,6 +9,7 @@ namespace cuppyzh.xtrtools.poadocumentgenerator.Controllers
     public class PullRequestApiController : ControllerBase
     {
         private readonly PrChangesServices _services = new PrChangesServices();
+        private readonly DocumentServices _documentServices = new DocumentServices();
 
         [HttpPost("get")]
         public IActionResult Get([FromForm] PullRequestApiGetRequestBody request)
@@ -20,7 +21,7 @@ namespace cuppyzh.xtrtools.poadocumentgenerator.Controllers
         [HttpPost("export")]
         public IActionResult Export([FromBody] ExportApiRequestBody request)
         {
-            var workbook = _services.Export(request);
+            var workbook = _documentServices.Export(request);
             string filename = $"{request.ProjectRepository}-PR-{request.PRId}.xlsx";
 
             Response.Headers["Content-Disposition"] = $"attachment;filename={filename}";
