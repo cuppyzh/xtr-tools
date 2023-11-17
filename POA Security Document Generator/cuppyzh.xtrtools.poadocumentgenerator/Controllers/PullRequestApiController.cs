@@ -1,6 +1,10 @@
 ﻿using ClosedXML.Excel;
+using cuppyzh.xtrtools.poadocumentgenerator.Exceptions;
 using cuppyzh.xtrtools.poadocumentgenerator.Services;
+using cuppyzh.xtrtools.poadocumentgenerator.Services.Interfaces;
+using cuppyzh.xtrtools.poadocumentgenerator.Utilities;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace cuppyzh.xtrtools.poadocumentgenerator.Controllers
 {
@@ -8,32 +12,83 @@ namespace cuppyzh.xtrtools.poadocumentgenerator.Controllers
     [Route("api/v1/pr-changes")]
     public class PullRequestApiController : ControllerBase
     {
-        private readonly PrChangesServices _services = new PrChangesServices();
-        private readonly DocumentServices _documentServices = new DocumentServices();
+        private readonly IPrChangesServices _prChangesServices;
+        private readonly IDocumentServices _documentServices;
+        private readonly ILogger<PullRequestApiController> _logger;
+
+        public PullRequestApiController(ILogger<PullRequestApiController> logger, IDocumentServices documentServices, IPrChangesServices prChangesServices)
+        {
+            _logger = logger;
+            _documentServices = documentServices;
+            _prChangesServices = prChangesServices;
+        }
 
         [HttpPost("get")]
         public IActionResult Get([FromForm] PullRequestApiGetRequestBody request)
         {
+            if (request == null)
+            {
+                return BadRequest();
+            }
 
-            return Ok(_services.GetListFiles(request.prurl));
+            if (string.IsNullOrEmpty(request.prurl))
+            {
+                return BadRequest();
+            }
+
+            _logger.LogDebug($"Body Request: {JsonConvert.SerializeObject(request)}");
+
+            try
+            {
+                var result = _prChangesServices.GetListFiles(request.prurl);
+
+                return Ok(result);
+            }
+            catch (XtoolsException ex)
+            {
+                _logger.LogException(ex);
+                return StatusCode(500, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogException(ex);
+                return StatusCode(500, "500 - Internal Server Error");
+            }
         }
 
         [HttpPost("export")]
         public IActionResult Export([FromBody] ExportApiRequestBody request)
         {
-            var workbook = _documentServices.Export(request);
-            string filename = $"{request.ProjectRepository}-PR-{request.PRId}.xlsx";
+            if (request == null)
+            {
+                return BadRequest();
+            }
 
-            Response.Headers["Content-Disposition"] = $"attachment;filename={filename}";
-            return File(workbook.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", filename);
-        }
+            if (!request.IsValid())
+            {
+                return BadRequest();
+            }
 
-        private Stream GetStream(XLWorkbook excelWorkbook)
-        {
-            Stream fs = new MemoryStream();
-            excelWorkbook.SaveAs(fs);
-            fs.Position = 0;
-            return fs;
+            _logger.LogDebug($"Body Request: {JsonConvert.SerializeObject(request)}");
+
+            try
+            {
+                var workbook = _documentServices.Export(request);
+                string filename = $"{request.ProjectRepository}-PR-{request.PRId}.xlsx";
+
+                Response.Headers["Content-Disposition"] = $"attachment;filename={filename}";
+                return File(workbook.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", filename);
+            }
+            catch (XtoolsException ex)
+            {
+                _logger.LogException(ex);
+                return StatusCode(500, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogException(ex);
+                return StatusCode(500, "500 - Internal Server Error");
+            }
         }
     }
 
@@ -50,6 +105,41 @@ namespace cuppyzh.xtrtools.poadocumentgenerator.Controllers
         public string CommitId { get; set; }
         public string SinceCommitId { get; set; }
         public List<FilesRequest> Files { get; set; }
+
+        public bool IsValid()
+        {
+            if (string.IsNullOrEmpty(ProjectName))
+            {
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(ProjectRepository))
+            {
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(PRId))
+            {
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(CommitId))
+            {
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(SinceCommitId))
+            {
+                return false;
+            }
+
+            if (Files == null || Files.Count == 0)
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 
     public class FilesRequest

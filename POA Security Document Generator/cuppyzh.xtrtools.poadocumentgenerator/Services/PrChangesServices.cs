@@ -1,12 +1,14 @@
 ﻿using ClosedXML.Excel;
 using cuppyzh.xtrtools.poadocumentgenerator.Controllers;
+using cuppyzh.xtrtools.poadocumentgenerator.Services.Interfaces;
 using cuppyzh.xtrtools.poadocumentgenerator.Utilities;
+using Microsoft.Extensions.Logging;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
 namespace cuppyzh.xtrtools.poadocumentgenerator.Services
 {
-    public class PrChangesServices
+    public class PrChangesServices: IPrChangesServices
     {
         private readonly ApiCallServices _callServices = new ApiCallServices();
 

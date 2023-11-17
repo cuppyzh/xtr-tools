@@ -1,6 +1,15 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+    string displayType = "none";
+    if (ViewBag.ErrorMessage != null)
+    {
+        displayType = "block";
+    }
 }
+
+<div class="alert alert-danger" role="alert" style="display:@displayType;">
+    @ViewBag.ErrorMessage
+</div>
 
 <div class="xtrtools">
     @{

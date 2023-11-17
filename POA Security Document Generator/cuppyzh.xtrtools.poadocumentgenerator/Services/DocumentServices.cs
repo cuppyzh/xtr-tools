@@ -1,6 +1,7 @@
 ﻿using ClosedXML.Excel;
 using cuppyzh.xtrtools.poadocumentgenerator.Controllers;
 using cuppyzh.xtrtools.poadocumentgenerator.Models;
+using cuppyzh.xtrtools.poadocumentgenerator.Services.Interfaces;
 using cuppyzh.xtrtools.poadocumentgenerator.Utilities;
 using DocumentFormat.OpenXml.Wordprocessing;
 using Newtonsoft.Json;
@@ -10,7 +11,7 @@ using System.Text.Json.Serialization;
 
 namespace cuppyzh.xtrtools.poadocumentgenerator.Services
 {
-    public class DocumentServices
+    public class DocumentServices: IDocumentServices
     {
         private readonly ApiCallServices _ApiCallServices = new ApiCallServices();
 

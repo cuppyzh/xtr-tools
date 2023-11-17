@@ -2,10 +2,11 @@
 using System.Text;
 using System;
 using cuppyzh.xtrtools.poadocumentgenerator.Utilities;
+using cuppyzh.xtrtools.poadocumentgenerator.Services.Interfaces;
 
 namespace cuppyzh.xtrtools.poadocumentgenerator.Services
 {
-    public class ApiCallServices
+    public class ApiCallServices: IApiCallServices
     {
         public HttpResponse SendPostRequest(string endpoint, object requestBody)
         {
