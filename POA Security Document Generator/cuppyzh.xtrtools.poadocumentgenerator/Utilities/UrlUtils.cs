@@ -11,5 +11,10 @@
         {
             return ApplicationSettings.Git.Endpoints.MainUrl + ApplicationSettings.Git.Endpoints.PrUrlPreview;
         }
+
+        public static string GetPrFileChanges()
+        {
+            return ApplicationSettings.Git.Endpoints.MainUrl + ApplicationSettings.Git.Endpoints.FileChangesUrl;
+        }
     }
 }

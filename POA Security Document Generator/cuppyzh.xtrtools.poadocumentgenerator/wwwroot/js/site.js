@@ -52,7 +52,7 @@ $(document).ready(function () {
         const checkboxInput = new Array();
 
         $("#filelist .form-check-input:checked").each(function () {
-            checkboxInput.push(this.name);
+            checkboxInput.push({File:this.name, Context:this.attributes["context"].value});
         });
 
         var request = {
@@ -60,6 +60,7 @@ $(document).ready(function () {
             "ProjectRepository": $('input[name="repositoryname"]').val(),
             "PRId": $('input[name="prid"]').val(),
             "CommitId": $('input[name="commitid"]').val(),
+            "SinceCommitId": $('input[name="sincecommitid"]').val(),
             "Files": checkboxInput
         };
 
@@ -69,23 +70,20 @@ $(document).ready(function () {
             data: JSON.stringify(request),
             contentType: "application/json; charset=utf-8",
             responseType: 'blob',
+            xhrFields: {
+                responseType: 'blob'
+            },
             //dataType: "json",
             success: function (response, status, xhr) {
                 var filename = GetFileNameFromXhr(xhr);
-
-                var blob = response;
-                if (window.navigator.msSaveOrOpenBlob) {
-                    window.navigator.msSaveBlob(blob, filename);
-                }
-                else {
-                    var downloadLink = window.document.createElement('a');
-                    downloadLink.href = window.URL.createObjectURL(new Blob([blob], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }));
-                    downloadLink.download = filename;
-                    document.body.appendChild(downloadLink);
-                    downloadLink.click();
-                    document.body.removeChild(downloadLink);
-                }
-
+                var tempDom = document.createElement('a');
+                var url = window.URL.createObjectURL(response);
+                tempDom.href = url;
+                tempDom.download = filename;
+                document.body.append(tempDom);
+                tempDom.click();
+                tempDom.remove();
+                window.URL.revokeObjectURL(url);
             },
             error: function () {
                 console.log("Call failed");
@@ -132,7 +130,7 @@ function PopulateFileList(response) {
             status = '<span class="filelist-deleted"><span class="filelist-text" style="max-width: 200px;">DELETED</span></span>';
         }
 
-        var li = $('<li class="list-group-item"><input class="form-check-input me-1" type="checkbox" name="' + value.path + '" id="' + value.path + '" checked/>' +
+        var li = $('<li class="list-group-item"><input class="form-check-input me-1" type="checkbox" name="' + value.path + '" id="' + value.path + '" context="' + value.type + '" checked/>' +
             '<label for="' + value.path + '"></label>' + status + '</li>');
         li.find('label').text(value.path);
         $('#filelist').append(li);

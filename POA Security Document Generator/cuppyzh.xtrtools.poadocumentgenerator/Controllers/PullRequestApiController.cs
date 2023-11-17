@@ -48,6 +48,13 @@ namespace cuppyzh.xtrtools.poadocumentgenerator.Controllers
         public string ProjectRepository { get; set; }
         public string PRId { get; set; }
         public string CommitId { get; set; }
-        public List<string> Files { get; set; }
+        public string SinceCommitId { get; set; }
+        public List<FilesRequest> Files { get; set; }
+    }
+
+    public class FilesRequest
+    {
+        public string File { get; set; }
+        public string Context { get; set; }
     }
 }

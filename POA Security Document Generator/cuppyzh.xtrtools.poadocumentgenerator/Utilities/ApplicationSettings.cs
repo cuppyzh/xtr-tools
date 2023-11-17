@@ -5,14 +5,21 @@ namespace cuppyzh.xtrtools.poadocumentgenerator.Utilities
     public static class ApplicationSettings
     {
         public const string GIT_SECTION_NAME = "Git";
+        public const string DOCUMENT_SECTION_NAME = "Document";
 
         public static GitConfigModel Git { get; set; } = new GitConfigModel();
+        public static DocumentConfigModel Document { get; set; } = new DocumentConfigModel();
     }
 
     public class GitConfigModel
     {
         public GitCredentialConfigModel Credential { get; set; }
         public GitEndpointConfigModel Endpoints { get; set; }
+    }
+
+    public class DocumentConfigModel
+    {
+        public int MinDocumentContext { get; set; }
     }
 
     public class GitCredentialConfigModel

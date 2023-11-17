@@ -4,6 +4,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 ConfigurationManager configuration = builder.Configuration;
 configuration.GetSection(ApplicationSettings.GIT_SECTION_NAME).Bind(ApplicationSettings.Git);
+configuration.GetSection(ApplicationSettings.DOCUMENT_SECTION_NAME).Bind(ApplicationSettings.Document);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation().ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true);
