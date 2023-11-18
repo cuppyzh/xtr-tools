@@ -11,12 +11,22 @@ using System.Text.Json.Serialization;
 
 namespace cuppyzh.xtrtools.poadocumentgenerator.Services
 {
-    public class DocumentServices: IDocumentServices
+    public class DocumentServices : IDocumentServices
     {
-        private readonly ApiCallServices _ApiCallServices = new ApiCallServices();
+        private readonly IApiCallServices _apiCallService;
+        private readonly ILogger<DocumentServices> _logger;
+
+        public DocumentServices(IApiCallServices apiCallServices, ILogger<DocumentServices> logger)
+        {
+            _apiCallService = apiCallServices;
+            _logger = logger;
+        }
 
         public MemoryStream Export(ExportApiRequestBody request)
         {
+            _logger.LogInformation($"Processing request: {request.ProjectName}/{request.ProjectRepository}/{request.PRId}");
+            _logger.LogInformation($"Total Files: {request.Files.Count}");
+
             using (XLWorkbook workbook = new XLWorkbook())
             {
                 var worksheet = workbook.AddWorksheet("Exported Sheet");
@@ -35,7 +45,7 @@ namespace cuppyzh.xtrtools.poadocumentgenerator.Services
 
                 int currentRowIndex = 2;
 
-                for(int i=0; i<request.Files.Count(); i++)
+                for (int i = 0; i < request.Files.Count(); i++)
                 {
                     worksheet.Cell($"A{currentRowIndex}").Value = request.Files[i].File;
                     worksheet.Cell($"B{currentRowIndex}").Value = request.Files[i].Context;
@@ -48,22 +58,19 @@ namespace cuppyzh.xtrtools.poadocumentgenerator.Services
                         .Replace("{filePath}", request.Files[i].File)
                         .ToString();
 
-                    var response = _ApiCallServices.SendGetRequest(endpoint);
+                    var response = _apiCallService.SendGetRequest(endpoint);
                     string responseBody = response.Content.ReadAsStringAsync().Result;
                     var fileChanges = JsonConvert.DeserializeObject<PrFileChangesResponseModel>(responseBody);
 
                     var startRowIndex = currentRowIndex;
                     currentRowIndex = _InsertFileChanges(worksheet, fileChanges, currentRowIndex);
-                    worksheet.Range($"A{startRowIndex}:A{currentRowIndex-1}").Column(1).Merge();
-                    worksheet.Range($"B{startRowIndex}:B{currentRowIndex-1}").Column(1).Merge();
+                    worksheet.Range($"A{startRowIndex}:A{currentRowIndex - 1}").Column(1).Merge();
+                    worksheet.Range($"B{startRowIndex}:B{currentRowIndex - 1}").Column(1).Merge();
                     worksheet.Range($"C{startRowIndex}:C{currentRowIndex - 1}").Column(1).Merge();
                     currentRowIndex++;
                 }
 
                 worksheet.Columns().AdjustToContents();
-
-
-                workbook.SaveAs("HelloWorld.xlsx");
 
                 using (MemoryStream memoryStream = new MemoryStream())
                 {
@@ -75,17 +82,18 @@ namespace cuppyzh.xtrtools.poadocumentgenerator.Services
 
         private int _InsertFileChanges(IXLWorksheet worksheet, PrFileChangesResponseModel changes, int currentRowIndex)
         {
-            for (int i =0; i< changes.diffs[0].hunks[0].segments.Count;i++)
+            for (int i = 0; i < changes.diffs[0].hunks[0].segments.Count; i++)
             {
                 var segment = changes.diffs[0].hunks[0].segments[i];
 
                 if (segment.type.Equals("CONTEXT", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    SegmentType segmentType = SegmentType.Middle; 
+                    SegmentType segmentType = SegmentType.Middle;
                     if (i == 0)
                     {
                         segmentType = SegmentType.First;
-                    } else if (i == changes.diffs[0].hunks[0].segments.Count - 1)
+                    }
+                    else if (i == changes.diffs[0].hunks[0].segments.Count - 1)
                     {
                         segmentType = SegmentType.Last;
                     }
@@ -122,10 +130,12 @@ namespace cuppyzh.xtrtools.poadocumentgenerator.Services
                 if (segmentType == SegmentType.First)
                 {
                     processedLines.AddRange(segment.lines.TakeLast(ApplicationSettings.Document.MinDocumentContext).ToList());
-                } else if (segmentType == SegmentType.Last)
+                }
+                else if (segmentType == SegmentType.Last)
                 {
                     processedLines.AddRange(segment.lines.Take(ApplicationSettings.Document.MinDocumentContext).ToList());
-                } else
+                }
+                else
                 {
                     processedLines.AddRange(segment.lines.Take(5).ToList());
                     processedLines.Add(new LinesDataModel()
@@ -144,7 +154,7 @@ namespace cuppyzh.xtrtools.poadocumentgenerator.Services
                 }
             }
 
-            foreach(var line in processedLines)
+            foreach (var line in processedLines)
             {
                 worksheet.Cell($"D{currentRowIndex}").Value = line.source;
                 worksheet.Cell($"E{currentRowIndex}").Value = line.destination;

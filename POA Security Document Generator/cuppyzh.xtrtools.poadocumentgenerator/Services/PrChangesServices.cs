@@ -1,5 +1,6 @@
 ﻿using ClosedXML.Excel;
 using cuppyzh.xtrtools.poadocumentgenerator.Controllers;
+using cuppyzh.xtrtools.poadocumentgenerator.Exceptions;
 using cuppyzh.xtrtools.poadocumentgenerator.Services.Interfaces;
 using cuppyzh.xtrtools.poadocumentgenerator.Utilities;
 using Microsoft.Extensions.Logging;
@@ -10,7 +11,12 @@ namespace cuppyzh.xtrtools.poadocumentgenerator.Services
 {
     public class PrChangesServices: IPrChangesServices
     {
-        private readonly ApiCallServices _callServices = new ApiCallServices();
+        private readonly IApiCallServices _callServices;
+
+        public PrChangesServices(IApiCallServices callServices)
+        {
+            _callServices = callServices;
+        }
 
         public object GetListFiles(string prurl)
         {
@@ -62,7 +68,7 @@ namespace cuppyzh.xtrtools.poadocumentgenerator.Services
             var match = regex.Match(prUrl);
             if (!match.Success)
             {
-                throw new Exception("Project Name is not found");
+                throw new XtoolsException("Project Name is not found");
             }
 
             return match.Value;
@@ -74,7 +80,7 @@ namespace cuppyzh.xtrtools.poadocumentgenerator.Services
             var match = regex.Match(prUrl);
             if (!match.Success)
             {
-                throw new Exception("Repository Name is not found");
+                throw new XtoolsException("Repository Name is not found");
             }
 
             return match.Value;
@@ -86,7 +92,7 @@ namespace cuppyzh.xtrtools.poadocumentgenerator.Services
             var match = regex.Match(prUrl);
             if (!match.Success)
             {
-                throw new Exception("Repository Name is not found");
+                throw new XtoolsException("Repository Name is not found");
             }
 
             return match.Value;

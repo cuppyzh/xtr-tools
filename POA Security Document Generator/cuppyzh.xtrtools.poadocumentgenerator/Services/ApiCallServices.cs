@@ -8,6 +8,13 @@ namespace cuppyzh.xtrtools.poadocumentgenerator.Services
 {
     public class ApiCallServices: IApiCallServices
     {
+        private readonly ILogger<ApiCallServices> _logger;
+
+        public ApiCallServices(ILogger<ApiCallServices> logger)
+        {
+            _logger = logger;
+        }
+
         public HttpResponse SendPostRequest(string endpoint, object requestBody)
         {
             throw new NotImplementedException();
@@ -17,6 +24,8 @@ namespace cuppyzh.xtrtools.poadocumentgenerator.Services
         {
             try
             {
+                _logger.LogInformation($"Endpoint: {endpoint}");
+
                 HttpMessageHandler handler = new HttpClientHandler();
 
                 var httpClient = new HttpClient(handler)
@@ -28,8 +37,10 @@ namespace cuppyzh.xtrtools.poadocumentgenerator.Services
                 httpClient.DefaultRequestHeaders.Add("Authorization", "Basic " + _GetCredential());
                 HttpResponseMessage response = httpClient.GetAsync(endpoint).Result;
 
+                _logger.LogInformation($"Status Response: {response.StatusCode}");
+
                 return response;
-            } catch(Exception ex)
+            } catch
             {
                 return null;
             }

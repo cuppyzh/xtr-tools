@@ -6,7 +6,12 @@ namespace cuppyzh.xtrtools.poadocumentgenerator.Services
 {
     public class UserServices: IUserServices
     {
-        private readonly ApiCallServices apiCallServices = new ApiCallServices();
+        private readonly IApiCallServices apiCallServices;
+
+        public UserServices(IApiCallServices apiCallServices)
+        {
+            this.apiCallServices = apiCallServices;
+        }
 
         public bool IsAuthenticated()
         {
