@@ -107,6 +107,8 @@ function GetFileNameFromXhr(xhr) {
 }
 
 function PopulateFileList(response) {
+    $("#filelist").empty();
+
     $('input[name="projectname"]').val(response["projectName"]);
     $('input[name="repositoryname"]').val(response["projectRepository"]);
     $('input[name="prid"]').val(response["prId"]);
