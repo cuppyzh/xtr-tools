@@ -26,20 +26,22 @@ namespace cuppyzh.xtrtools.poadocumentgenerator.Controllers
         [HttpPost("get")]
         public IActionResult Get([FromForm] PullRequestApiGetRequestBody request)
         {
-            if (request == null)
-            {
-                return BadRequest();
-            }
-
-            if (string.IsNullOrEmpty(request.prurl))
-            {
-                return BadRequest();
-            }
-
-            _logger.LogDebug($"Body Request: {JsonConvert.SerializeObject(request)}");
 
             try
             {
+
+                if (request == null)
+                {
+                    throw new XtoolsException("Request is null");
+                }
+
+                if (string.IsNullOrEmpty(request.prurl))
+                {
+                    throw new XtoolsException("Request.PRURL is null");
+                }
+
+                _logger.LogDebug($"Body Request: {JsonConvert.SerializeObject(request)}");
+
                 var result = _prChangesServices.GetListFiles(request.prurl);
 
                 return Ok(result);
@@ -59,20 +61,20 @@ namespace cuppyzh.xtrtools.poadocumentgenerator.Controllers
         [HttpPost("export")]
         public IActionResult Export([FromBody] ExportApiRequestBody request)
         {
-            if (request == null)
-            {
-                return BadRequest();
-            }
-
-            if (!request.IsValid())
-            {
-                return BadRequest();
-            }
-
             _logger.LogDebug($"Body Request: {JsonConvert.SerializeObject(request)}");
 
             try
             {
+                if (request == null)
+                {
+                    throw new XtoolsException("Request is null");
+                }
+
+                if (!request.IsValid())
+                {
+                    throw new XtoolsException("Request is invalid");
+                }
+
                 var workbook = _documentServices.Export(request);
                 string filename = $"{request.ProjectRepository}-PR-{request.PRId}.xlsx";
 

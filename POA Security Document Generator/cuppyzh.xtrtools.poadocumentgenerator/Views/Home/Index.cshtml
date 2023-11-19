@@ -8,16 +8,10 @@
 }
 
 <div class="alert alert-danger" role="alert" style="display:@displayType;">
-    @ViewBag.ErrorMessage
+    <span id="error-message">@ViewBag.ErrorMessage</span>
 </div>
 
 <div class="xtrtools">
-    @{
-        if (ViewBag.IsAuthenticated == false)
-        {
-            <div class="xtrtools-noticiation">User is not authenticated, please check the config again</div>
-        }
-    }
     <div class="xtrtools-prform">
         <form method="post" id="xtrtools-form">
             <div class="nice-form-group">
@@ -62,26 +56,6 @@
             <div class="nice-form-group">
                 <label>File List</label>
                 <ul id="filelist" class="list-group list-group-light" style="min-width: 22rem;">
-                    @* <li class="list-group-item">
-                        <input class="form-check-input me-1" type="checkbox" value="" aria-label="...">
-                        First checkbox
-                    </li>
-                    <li class="list-group-item">
-                        <input class="form-check-input me-1" type="checkbox" value="" aria-label="...">
-                        Second checkbox
-                    </li>
-                    <li class="list-group-item">
-                        <input class="form-check-input me-1" type="checkbox" value="" aria-label="...">
-                        Third checkbox
-                    </li>
-                    <li class="list-group-item">
-                        <input class="form-check-input me-1" type="checkbox" value="" aria-label="...">
-                        Fourth checkbox
-                    </li>
-                    <li class="list-group-item">
-                        <input class="form-check-input me-1" type="checkbox" value="" aria-label="...">
-                        Fifth checkbox
-                    </li> *@
                 </ul>
             </div>
 

@@ -38,8 +38,8 @@ $(document).ready(function () {
                 PopulateFileList(response);
                 $("#cover-spin").show();
             },
-            error: function () {
-                console.log("Call failed");
+            error: function (xhr, status, error) {
+                SetErrorMessage(xhr.responseText);
             }
         });
     });
@@ -139,4 +139,9 @@ function PopulateFileList(response) {
     });
 
     $(".xtrtools-prcheckbox").show();
+}
+
+function SetErrorMessage(message) {
+    $(".alert").show();
+    $("#error-message").text(message)
 }

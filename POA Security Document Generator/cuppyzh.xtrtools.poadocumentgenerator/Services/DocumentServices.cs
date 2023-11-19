@@ -1,5 +1,6 @@
 ﻿using ClosedXML.Excel;
 using cuppyzh.xtrtools.poadocumentgenerator.Controllers;
+using cuppyzh.xtrtools.poadocumentgenerator.Exceptions;
 using cuppyzh.xtrtools.poadocumentgenerator.Models;
 using cuppyzh.xtrtools.poadocumentgenerator.Services.Interfaces;
 using cuppyzh.xtrtools.poadocumentgenerator.Utilities;
@@ -61,6 +62,11 @@ namespace cuppyzh.xtrtools.poadocumentgenerator.Services
                     var response = _apiCallService.SendGetRequest(endpoint);
                     string responseBody = response.Content.ReadAsStringAsync().Result;
                     var fileChanges = JsonConvert.DeserializeObject<PrFileChangesResponseModel>(responseBody);
+
+                    if (fileChanges == null)
+                    {
+                        throw new XtoolsException($"File Changes response for {request.Files[0].File} is null");
+                    }
 
                     var startRowIndex = currentRowIndex;
                     currentRowIndex = _InsertFileChanges(worksheet, fileChanges, currentRowIndex);
@@ -173,10 +179,10 @@ namespace cuppyzh.xtrtools.poadocumentgenerator.Services
                 worksheet.Cell($"F{currentRowIndex}").Value = "+";
                 worksheet.Cell($"G{currentRowIndex}").Value = $"'{line.line}";
 
-                worksheet.Cell($"D{currentRowIndex}").Style.Fill.BackgroundColor = XLColor.Lime;
-                worksheet.Cell($"E{currentRowIndex}").Style.Fill.BackgroundColor = XLColor.Lime;
-                worksheet.Cell($"F{currentRowIndex}").Style.Fill.BackgroundColor = XLColor.Lime;
-                worksheet.Cell($"G{currentRowIndex}").Style.Fill.BackgroundColor = XLColor.Lime;
+                worksheet.Cell($"D{currentRowIndex}").Style.Fill.BackgroundColor = ApplicationSettings.Document.GetCodeAddedColor();
+                worksheet.Cell($"E{currentRowIndex}").Style.Fill.BackgroundColor = ApplicationSettings.Document.GetCodeAddedColor();
+                worksheet.Cell($"F{currentRowIndex}").Style.Fill.BackgroundColor = ApplicationSettings.Document.GetCodeAddedColor();
+                worksheet.Cell($"G{currentRowIndex}").Style.Fill.BackgroundColor = ApplicationSettings.Document.GetCodeAddedColor();
 
                 currentRowIndex++;
             }
@@ -192,10 +198,10 @@ namespace cuppyzh.xtrtools.poadocumentgenerator.Services
                 worksheet.Cell($"F{currentRowIndex}").Value = "-";
                 worksheet.Cell($"G{currentRowIndex}").Value = $"'{line.line}";
 
-                worksheet.Cell($"D{currentRowIndex}").Style.Fill.BackgroundColor = XLColor.Orange;
-                worksheet.Cell($"F{currentRowIndex}").Style.Fill.BackgroundColor = XLColor.Orange;
-                worksheet.Cell($"G{currentRowIndex}").Style.Fill.BackgroundColor = XLColor.Orange;
-                worksheet.Cell($"H{currentRowIndex}").Style.Fill.BackgroundColor = XLColor.Orange;
+                worksheet.Cell($"D{currentRowIndex}").Style.Fill.BackgroundColor = ApplicationSettings.Document.GetCodeRemovedColor();
+                worksheet.Cell($"E{currentRowIndex}").Style.Fill.BackgroundColor = ApplicationSettings.Document.GetCodeRemovedColor();
+                worksheet.Cell($"F{currentRowIndex}").Style.Fill.BackgroundColor = ApplicationSettings.Document.GetCodeRemovedColor();
+                worksheet.Cell($"G{currentRowIndex}").Style.Fill.BackgroundColor = ApplicationSettings.Document.GetCodeRemovedColor();
 
                 currentRowIndex++;
             }

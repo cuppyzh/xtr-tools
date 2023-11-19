@@ -4,6 +4,7 @@ using cuppyzh.xtrtools.poadocumentgenerator.Exceptions;
 using cuppyzh.xtrtools.poadocumentgenerator.Services.Interfaces;
 using cuppyzh.xtrtools.poadocumentgenerator.Utilities;
 using Microsoft.Extensions.Logging;
+using System.Net;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
@@ -25,8 +26,19 @@ namespace cuppyzh.xtrtools.poadocumentgenerator.Services
             var endpoint = _GeneratePrChangesUrl(prurl);
             var response = _callServices.SendGetRequest(endpoint);
 
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                throw new XtoolsException($"Request to {prurl} is not failed. Http Status Code: {response.StatusCode}");
+            }
+
             string responseBody = response.Content.ReadAsStringAsync().Result;
+            
             JsonDocument doc = JsonDocument.Parse(responseBody);
+
+            if (doc == null)
+            {
+                throw new XtoolsException($"Response from {prurl} is failed to be parsed. Response Body: {responseBody}");
+            }
 
             JsonElement root = doc.RootElement;
             JsonElement values = root.GetProperty("values");
