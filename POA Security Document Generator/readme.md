@@ -22,4 +22,4 @@ UI View
 XLSX View
 
 
-![Doc Image](../assets/poa-tools/sample-doc.png)
+![Doc Image](../assets/poa-tools/sample-doc.PNG)
