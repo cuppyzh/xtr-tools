@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\buildMultiTargeting\a-no-da.xtools.web.props" />
+</Project>

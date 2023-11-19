@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\a-no-da.xtools.web.props" />
+</Project>
