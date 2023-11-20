@@ -15,4 +15,9 @@
     <ProjectReference Include="..\a-no-da.xtools.core\a-no-da.xtools.core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\Responses\" />
+    <Folder Include="Models\Requests\" />
+  </ItemGroup>
+
 </Project>

@@ -1,0 +1,10 @@
+{
+  "CoreConfig": {
+    "Git": {
+      "Credential": {
+        "Username": "test",
+        "Password": "testpassword"
+      }
+    }
+  }
+}

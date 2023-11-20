@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="logs\**" />
+    <Content Remove="logs\**" />
+    <EmbeddedResource Remove="logs\**" />
+    <None Remove="logs\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\a-no-da.xtools.core\a-no-da.xtools.core.csproj" />
     <ProjectReference Include="..\a-no-da.xtools.modules.poadocument\a-no-da.xtools.modules.poadocument.csproj" />
   </ItemGroup>

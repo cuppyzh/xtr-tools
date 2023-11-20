@@ -2,14 +2,76 @@
 @{
     ViewData["Title"] = "POA Document";
     Layout = "~/Pages/Shared/_Layout.cshtml";
+
+    string displayType = "none";
+    if (ViewBag.ErrorMessage != null)
+    {
+        displayType = "block";
+    }
 }
 
 @section Styles {
     <link rel="stylesheet" href="~/modules/poadocument/css/module.css" asp-append-version="true" />
 }
 
-<h1>Index</h1>
+<div class="alert alert-danger" role="alert" style="display:@displayType;">
+    <span id="error-message">@ViewBag.ErrorMessage</span>
+</div>
 
+<div class="xtrtools">
+    <div class="xtrtools-prform">
+        <form method="post" id="xtrtools-form">
+            <div class="nice-form-group">
+                <label>PR URL</label>
+                <input type="text" placeholder="@ViewBag.GitPrlUrlPreview" name="prurl" />
+            </div>
+
+            <div class="nice-form-group">
+                <input id="xtrtools-form-submit" type="submit" value="Get PR Changes" class="btn btn-primary">
+            </div>
+        </form>
+    </div>
+    <br />
+    <div class="xtrtools-prcheckbox" style="display:none;">
+        <form method="post" id="xtrtools-form-filelist">
+
+            <div class="nice-form-group">
+                <label>Project Name</label>
+                <input type="text" placeholder="" name="projectname" readonly />
+            </div>
+
+            <div class="nice-form-group">
+                <label>Repository Name</label>
+                <input type="text" placeholder="" name="repositoryname" readonly />
+            </div>
+
+            <div class="nice-form-group">
+                <label>PR ID</label>
+                <input type="text" placeholder="" name="prid" readonly />
+            </div>
+
+            <div class="nice-form-group">
+                <label>Commmit ID</label>
+                <input type="text" placeholder="" name="commitid" readonly />
+            </div>
+
+            <div class="nice-form-group">
+                <label>Start Commit ID</label>
+                <input type="text" placeholder="" name="sincecommitid" readonly />
+            </div>
+
+            <div class="nice-form-group">
+                <label>File List</label>
+                <ul id="filelist" class="list-group list-group-light" style="min-width: 22rem;">
+                </ul>
+            </div>
+
+            <div class="nice-form-group">
+                <input id="xtrtools-form-filelist-submit" type="submit" value="Generate Document" class="btn btn-primary">
+            </div>
+        </form>
+    </div>
+</div>
 
 @section Scripts {
     <script src="~/modules/poadocument/js/module.js" asp-append-version="true"></script>
