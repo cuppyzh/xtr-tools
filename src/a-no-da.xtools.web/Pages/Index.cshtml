@@ -1,0 +1,21 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/list.css" asp-append-version="true" />
+}
+
+<div class="text-center">
+    <h1 class="display-4">XTools</h1>
+    <ol style="--length: 5" role="list">
+        <li style="--i: 1">
+            <h3>POA Document Generator</h3>
+            <p>
+                Click <a asp-area="" asp-page="/Modules/PoaDocument/Index">here</a> to go to the tools.
+            </p>
+        </li>
+    </ol>
+</div>
