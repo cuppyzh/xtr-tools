@@ -62,7 +62,7 @@ namespace a_no_da.xtools.modules.poadocument.Services
                         .Replace("{filePath}", request.Files[i].File)
                         .ToString();
 
-                    var response = _apiCallService.SendGetRequest(endpoint);
+                    var response = _apiCallService.SendGetRequest(endpoint, _apiCallService.GetStashCredentials());
                     string responseBody = response.Content.ReadAsStringAsync().Result;
                     var fileChanges = JsonConvert.DeserializeObject<GitPrFileChangesResponse>(responseBody);
 

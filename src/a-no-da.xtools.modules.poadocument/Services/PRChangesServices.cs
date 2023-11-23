@@ -36,7 +36,7 @@ namespace a_no_da.xtools.modules.poadocument.Services
             List<FilesChangesResponse> files = new List<FilesChangesResponse>();
 
             var endpoint = _GeneratePrChangesUrl(request.PRUrl);
-            var response = _apiCallServices.SendGetRequest(endpoint);
+            var response = _apiCallServices.SendGetRequest(endpoint, _apiCallServices.GetStashCredentials());
 
             if (response.StatusCode != HttpStatusCode.OK)
             {

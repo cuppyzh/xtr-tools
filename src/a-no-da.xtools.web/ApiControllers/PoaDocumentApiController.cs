@@ -37,8 +37,11 @@ namespace a_no_da.xtools.web.ApiControllers
         [HttpPost("security-assessment/export")]
         public IActionResult Export([FromBody] ExportPrChangesRequest request)
         {
-            var result = _documentServices.Export(request);
-            return Ok(result);
+            var workbookStream = _documentServices.Export(request);
+            string filename = $"{DateTime.Now.ToShortDateString()}-{request.ProjectRepository}-{request.PRId}.xlsx";
+
+            Response.Headers["Content-Disposition"] = $"attachment;filename={filename}";
+            return File(workbookStream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", filename);
         }
     }
 }

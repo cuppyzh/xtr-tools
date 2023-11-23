@@ -12,5 +12,6 @@ namespace a_no_da.xtools.core.Services.Interfaces
         HttpResponse SendPostRequest(string endpoint, object requestBody);
         HttpResponseMessage SendGetRequest(string endpoint);
         HttpResponseMessage SendGetRequest(string endpoint, string credentials);
+        string GetStashCredentials();
     }
 }

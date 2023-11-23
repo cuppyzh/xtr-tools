@@ -55,7 +55,7 @@ $(document).ready(function () {
 
         $.ajax({
             type: 'POST',
-            url: '/api/v1/pr-changes/export',
+            url: '/api/v1/poadocument/security-assessment/export',
             data: JSON.stringify(request),
             contentType: "application/json; charset=utf-8",
             responseType: 'blob',
