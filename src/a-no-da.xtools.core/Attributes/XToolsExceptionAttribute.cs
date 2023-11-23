@@ -13,6 +13,11 @@ namespace a_no_da.xtools.core.Attributes
 
             if (xtoolsException != null)
             {
+                context.Result = new ObjectResult(xtoolsException.Message)
+                {
+                    StatusCode = 500
+                };
+
                 return;
             }
 

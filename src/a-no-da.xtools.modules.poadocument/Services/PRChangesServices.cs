@@ -3,6 +3,8 @@ using a_no_da.xtools.core.Services.Interfaces;
 using a_no_da.xtools.modules.poadocument.Models.Requests;
 using a_no_da.xtools.modules.poadocument.Models.Responses;
 using a_no_da.xtools.modules.poadocument.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +27,12 @@ namespace a_no_da.xtools.modules.poadocument.Services
 
         public PRChangesResponse GetListFiles(GetPrChangesRequest request)
         {
+            if (request == null)
+                throw new XToolsValidationException("Request Body is null");
+
+            if (string.IsNullOrEmpty(request.PRUrl))
+                throw new BadHttpRequestException($"PRURL value is request is empty");
+
             List<FilesChangesResponse> files = new List<FilesChangesResponse>();
 
             var endpoint = _GeneratePrChangesUrl(request.PRUrl);

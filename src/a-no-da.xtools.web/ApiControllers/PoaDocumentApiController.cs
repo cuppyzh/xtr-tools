@@ -30,8 +30,6 @@ namespace a_no_da.xtools.web.ApiControllers
         [HttpPost("pr-changes/get")]
         public IActionResult Get([FromForm] GetPrChangesRequest request)
         {
-            var a = ModuleConfig.Config;
-            var b = CoreConfig.Config;
             var result = _pRChangesServices.GetListFiles(request);
             return Ok(result);
         }
@@ -39,7 +37,8 @@ namespace a_no_da.xtools.web.ApiControllers
         [HttpPost("security-assessment/export")]
         public IActionResult Export([FromBody] ExportPrChangesRequest request)
         {
-            throw new NotImplementedException();
+            var result = _documentServices.Export(request);
+            return Ok(result);
         }
     }
 }

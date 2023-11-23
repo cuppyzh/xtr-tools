@@ -8,5 +8,9 @@ namespace a_no_da.xtools.core.Exceptions
 {
     public class XToolsValidationException: Exception
     {
+        public XToolsValidationException(string message)
+        {
+
+        }
     }
 }
