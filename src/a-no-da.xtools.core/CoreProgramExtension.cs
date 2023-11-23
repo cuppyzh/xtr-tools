@@ -25,7 +25,7 @@ namespace a_no_da.xtools.core
                 });
             });
 
-            builder.Services.Configure<CoreConfig>(builder.Configuration.GetSection(CoreConfig.SECTION_NAME));
+            builder.Configuration.GetSection(CoreConfig.SECTION_NAME).Bind(CoreConfig.Config);
         }
     }
 }

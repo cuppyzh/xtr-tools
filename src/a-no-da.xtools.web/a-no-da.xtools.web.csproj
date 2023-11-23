@@ -15,6 +15,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="Configs\PoaDocumentConfig.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Configs\PoaDocumentConfig.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\a-no-da.xtools.core\a-no-da.xtools.core.csproj" />
     <ProjectReference Include="..\a-no-da.xtools.modules.poadocument\a-no-da.xtools.modules.poadocument.csproj" />
   </ItemGroup>

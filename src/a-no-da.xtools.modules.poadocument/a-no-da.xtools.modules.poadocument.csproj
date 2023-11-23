@@ -12,12 +12,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\a-no-da.xtools.core\a-no-da.xtools.core.csproj" />
+    <PackageReference Include="ClosedXML" Version="0.102.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Models\Responses\" />
-    <Folder Include="Models\Requests\" />
+    <ProjectReference Include="..\a-no-da.xtools.core\a-no-da.xtools.core.csproj" />
   </ItemGroup>
 
 </Project>

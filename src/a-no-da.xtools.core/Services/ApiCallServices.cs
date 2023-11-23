@@ -1,4 +1,5 @@
 ﻿using a_no_da.xtools.core.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
@@ -12,12 +13,20 @@ namespace a_no_da.xtools.core.Services
     public class ApiCallServices: IApiCallServices
     {
         private readonly ILogger<ApiCallServices> _logger;
-        private readonly CoreConfig _coreConfig;
 
-        public ApiCallServices(ILogger<ApiCallServices> logger, IOptions<CoreConfig> coreConfig)
+        public ApiCallServices(ILogger<ApiCallServices> logger)
         {
             _logger = logger;
-            _coreConfig = coreConfig.Value;
+        }
+
+        public HttpResponse SendPostRequest(string endpoint, object requestBody)
+        {
+            throw new NotImplementedException();
+        }
+
+        public HttpResponseMessage SendGetRequest(string endpoint)
+        {
+            throw new NotImplementedException();
         }
 
         public HttpResponseMessage SendGetRequest(string endpoint, string credentials)
@@ -53,7 +62,7 @@ namespace a_no_da.xtools.core.Services
 
         public string GetStashCredentials()
         {
-            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes($"{_coreConfig.Git.Credential.Username}:{_coreConfig.Git.Credential.Password}");
+            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes($"{CoreConfig.Config.Git.Credential.Username}:{CoreConfig.Config.Git.Credential.Password}");
             return System.Convert.ToBase64String(plainTextBytes);
         }
     }

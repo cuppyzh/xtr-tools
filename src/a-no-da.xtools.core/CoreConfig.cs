@@ -6,10 +6,15 @@ using System.Threading.Tasks;
 
 namespace a_no_da.xtools.core
 {
-    public class CoreConfig
+    public static class CoreConfig
     {
         public const string CONFIG_PATH = "Configs/GitConfig.json";
         public const string SECTION_NAME = "CoreConfig";
+        public static ConfigModel Config { get; set; } = new ConfigModel();
+    }
+
+    public class ConfigModel
+    {
         public GitConfigModel Git { get; set; } = new GitConfigModel();
     }
 

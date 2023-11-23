@@ -1,5 +1,7 @@
 ﻿using a_no_da.xtools.core;
 using a_no_da.xtools.core.Attributes;
+using a_no_da.xtools.modules.poadocument;
+using a_no_da.xtools.modules.poadocument.Models.Requests;
 using a_no_da.xtools.modules.poadocument.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -13,13 +15,11 @@ namespace a_no_da.xtools.web.ApiControllers
     {
         private readonly IDocumentServices _documentServices;
         private readonly IPRChangesServices _pRChangesServices;
-        private readonly CoreConfig _configs;
 
-        public PoaDocumentApiController(IDocumentServices documentServices, IPRChangesServices pRChangesServices, IOptions<CoreConfig> configs)
+        public PoaDocumentApiController(IDocumentServices documentServices, IPRChangesServices pRChangesServices)
         {
             _documentServices = documentServices;
             _pRChangesServices = pRChangesServices;
-            _configs = configs.Value;
         }
 
         public IActionResult Index()
@@ -28,13 +28,16 @@ namespace a_no_da.xtools.web.ApiControllers
         }
 
         [HttpPost("pr-changes/get")]
-        public IActionResult Get([FromForm] object request)
+        public IActionResult Get([FromForm] GetPrChangesRequest request)
         {
-            throw new NotImplementedException();
+            var a = ModuleConfig.Config;
+            var b = CoreConfig.Config;
+            var result = _pRChangesServices.GetListFiles(request);
+            return Ok(result);
         }
 
         [HttpPost("security-assessment/export")]
-        public IActionResult Export([FromBody] object request)
+        public IActionResult Export([FromBody] ExportPrChangesRequest request)
         {
             throw new NotImplementedException();
         }
